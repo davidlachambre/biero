@@ -1,0 +1,70 @@
+<script src="../bower_components/page/page.js">
+</script>
+<script>
+    window.addEventListener('WebComponentsReady', function () {
+
+        // We use Page.js for routing. This is a Micro
+        // client-side router inspired by the Express router
+        // More info: https://visionmedia.github.io/page.js/
+
+        // Removes end / from app.baseUrl which page.base requires for production
+        if (window.location.port === '') { // if production
+            page.base(app.baseUrl.replace(/\/$/, ''));
+        }
+
+        // Middleware
+        function scrollToTop(ctx, next) {
+            app.scrollPageToTop();
+            next();
+        }
+
+        function closeDrawer(ctx, next) {
+            //app.closeDrawer();
+            next();
+        }
+
+        // Routes
+        page('*', scrollToTop, closeDrawer, function (ctx, next) {
+            next();
+        });
+
+        page('/', function () {
+            app.route = 'accueil';
+            app.$.pageaccueil.requeteAjax();
+            app.$.pageaccueil.scrollTopRapide(); //Revient en haut de la page.
+            app.$.pagebiere.updateAffichageNote(); //Reset de l'affichage des étoiles pour voter.
+        });
+
+        page(app.baseUrl, function () {
+            app.route = 'accueil';
+            app.$.pageaccueil.requeteAjax();
+            app.$.pageaccueil.scrollTopRapide(); //Revient en haut de la page.
+            app.$.pagebiere.updateAffichageNote(); //Reset de l'affichage des étoiles pour voter.
+        });
+
+        page('/biere/:id', function (data) {
+            app.route = 'biere-info';
+            app.params = data.params;
+            app.$.pagebiere.requeteAjax();
+            app.$.pagebiere.scrollTop(); //Revient en haut de la page.
+            app.$.pagebiere.introAlleatoire(); //Revient en haut de la page.
+        });
+
+        // 404
+        page('*', function () {
+            app.$.toast.text = window.location.href + ' Page introuvable. Redirection vers l\'accueil';
+            app.$.toast.hide(); //Au cas où un autre toast serait déjà affiché.
+            app.$.toast.show({
+                style: 'background-color:rgba(108, 0, 0, 0.9)', //Toast couleur rouge.
+                duration: "5000"
+            });
+            page.redirect(app.baseUrl);
+        });
+
+        // add #! before urls
+        page({
+            hashbang: true
+        });
+
+    });
+</script>

@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="fr">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Biero : Application client</title>
+
+    <script src="bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+    <link rel="import" href="elements/elements.html">
+
+    <!-- For shared styles, shared-styles.html import in elements.html -->
+    <style is="custom-style" include="shared-styles">
+        body {
+            @apply(--layout-vertical);
+            @apply(--layout-fullbleed);
+        }
+        
+        iron-pages {
+            height: 100%;
+        }
+    </style>
+</head>
+
+<body unresolved>
+    <template is="dom-bind" id="app">
+
+        <neon-animated-pages class="flex" attr-for-selected="data-route" selected="{{route}}">
+            <biero-accueil id="pageaccueil" data-route="accueil"></biero-accueil>
+            <biero-biere id="pagebiere" data-route="biere-info"></biero-biere>
+        </neon-animated-pages>
+
+        <paper-toast id="toast" always-on-top duration="5000">
+            <iron-icon icon="cancel" class="toast-hide-button" role="button" tabindex="0" onclick="app.$.toast.hide()"></iron-icon>
+        </paper-toast>
+    </template>
+
+
+    <script src="scripts/app.js"></script>
+
+</body>
+
+
+</html>
